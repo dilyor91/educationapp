@@ -25,7 +25,7 @@ export const AddmissionRulesUpdate = () => {
   const updateSuccess = useAppSelector(state => state.addmissionRules.updateSuccess);
 
   const handleClose = () => {
-    navigate('/addmission-rules');
+    navigate('/addmission-rules' + location.search);
   };
 
   useEffect(() => {

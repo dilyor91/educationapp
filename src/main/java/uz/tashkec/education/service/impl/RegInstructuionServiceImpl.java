@@ -1,14 +1,17 @@
 package uz.tashkec.education.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.tashkec.education.domain.RegInstructuion;
 import uz.tashkec.education.repository.RegInstructuionRepository;
 import uz.tashkec.education.service.RegInstructuionService;
+import uz.tashkec.education.service.dto.RegInstructuionDTO;
+import uz.tashkec.education.service.mapper.RegInstructuionMapper;
 
 /**
  * Service Implementation for managing {@link RegInstructuion}.
@@ -21,68 +24,56 @@ public class RegInstructuionServiceImpl implements RegInstructuionService {
 
     private final RegInstructuionRepository regInstructuionRepository;
 
-    public RegInstructuionServiceImpl(RegInstructuionRepository regInstructuionRepository) {
+    private final RegInstructuionMapper regInstructuionMapper;
+
+    public RegInstructuionServiceImpl(RegInstructuionRepository regInstructuionRepository, RegInstructuionMapper regInstructuionMapper) {
         this.regInstructuionRepository = regInstructuionRepository;
+        this.regInstructuionMapper = regInstructuionMapper;
     }
 
     @Override
-    public RegInstructuion save(RegInstructuion regInstructuion) {
-        log.debug("Request to save RegInstructuion : {}", regInstructuion);
-        return regInstructuionRepository.save(regInstructuion);
+    public RegInstructuionDTO save(RegInstructuionDTO regInstructuionDTO) {
+        log.debug("Request to save RegInstructuion : {}", regInstructuionDTO);
+        RegInstructuion regInstructuion = regInstructuionMapper.toEntity(regInstructuionDTO);
+        regInstructuion = regInstructuionRepository.save(regInstructuion);
+        return regInstructuionMapper.toDto(regInstructuion);
     }
 
     @Override
-    public RegInstructuion update(RegInstructuion regInstructuion) {
-        log.debug("Request to update RegInstructuion : {}", regInstructuion);
-        return regInstructuionRepository.save(regInstructuion);
+    public RegInstructuionDTO update(RegInstructuionDTO regInstructuionDTO) {
+        log.debug("Request to update RegInstructuion : {}", regInstructuionDTO);
+        RegInstructuion regInstructuion = regInstructuionMapper.toEntity(regInstructuionDTO);
+        regInstructuion = regInstructuionRepository.save(regInstructuion);
+        return regInstructuionMapper.toDto(regInstructuion);
     }
 
     @Override
-    public Optional<RegInstructuion> partialUpdate(RegInstructuion regInstructuion) {
-        log.debug("Request to partially update RegInstructuion : {}", regInstructuion);
+    public Optional<RegInstructuionDTO> partialUpdate(RegInstructuionDTO regInstructuionDTO) {
+        log.debug("Request to partially update RegInstructuion : {}", regInstructuionDTO);
 
         return regInstructuionRepository
-            .findById(regInstructuion.getId())
+            .findById(regInstructuionDTO.getId())
             .map(existingRegInstructuion -> {
-                if (regInstructuion.getTitleUz() != null) {
-                    existingRegInstructuion.setTitleUz(regInstructuion.getTitleUz());
-                }
-                if (regInstructuion.getTitleRu() != null) {
-                    existingRegInstructuion.setTitleRu(regInstructuion.getTitleRu());
-                }
-                if (regInstructuion.getTitleKr() != null) {
-                    existingRegInstructuion.setTitleKr(regInstructuion.getTitleKr());
-                }
-                if (regInstructuion.getContentUz() != null) {
-                    existingRegInstructuion.setContentUz(regInstructuion.getContentUz());
-                }
-                if (regInstructuion.getContentRu() != null) {
-                    existingRegInstructuion.setContentRu(regInstructuion.getContentRu());
-                }
-                if (regInstructuion.getContentKr() != null) {
-                    existingRegInstructuion.setContentKr(regInstructuion.getContentKr());
-                }
-                if (regInstructuion.getStatus() != null) {
-                    existingRegInstructuion.setStatus(regInstructuion.getStatus());
-                }
+                regInstructuionMapper.partialUpdate(existingRegInstructuion, regInstructuionDTO);
 
                 return existingRegInstructuion;
             })
-            .map(regInstructuionRepository::save);
+            .map(regInstructuionRepository::save)
+            .map(regInstructuionMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<RegInstructuion> findAll() {
+    public Page<RegInstructuionDTO> findAll(Pageable pageable) {
         log.debug("Request to get all RegInstructuions");
-        return regInstructuionRepository.findAll();
+        return regInstructuionRepository.findAll(pageable).map(regInstructuionMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<RegInstructuion> findOne(Long id) {
+    public Optional<RegInstructuionDTO> findOne(Long id) {
         log.debug("Request to get RegInstructuion : {}", id);
-        return regInstructuionRepository.findById(id);
+        return regInstructuionRepository.findById(id).map(regInstructuionMapper::toDto);
     }
 
     @Override

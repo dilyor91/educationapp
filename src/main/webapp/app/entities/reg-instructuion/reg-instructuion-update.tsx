@@ -25,7 +25,7 @@ export const RegInstructuionUpdate = () => {
   const updateSuccess = useAppSelector(state => state.regInstructuion.updateSuccess);
 
   const handleClose = () => {
-    navigate('/reg-instructuion');
+    navigate('/reg-instructuion' + location.search);
   };
 
   useEffect(() => {

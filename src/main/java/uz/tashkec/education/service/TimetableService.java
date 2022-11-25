@@ -1,43 +1,45 @@
 package uz.tashkec.education.service;
 
-import java.util.List;
 import java.util.Optional;
-import uz.tashkec.education.domain.Timetable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import uz.tashkec.education.service.dto.TimetableDTO;
 
 /**
- * Service Interface for managing {@link Timetable}.
+ * Service Interface for managing {@link uz.tashkec.education.domain.Timetable}.
  */
 public interface TimetableService {
     /**
      * Save a timetable.
      *
-     * @param timetable the entity to save.
+     * @param timetableDTO the entity to save.
      * @return the persisted entity.
      */
-    Timetable save(Timetable timetable);
+    TimetableDTO save(TimetableDTO timetableDTO);
 
     /**
      * Updates a timetable.
      *
-     * @param timetable the entity to update.
+     * @param timetableDTO the entity to update.
      * @return the persisted entity.
      */
-    Timetable update(Timetable timetable);
+    TimetableDTO update(TimetableDTO timetableDTO);
 
     /**
      * Partially updates a timetable.
      *
-     * @param timetable the entity to update partially.
+     * @param timetableDTO the entity to update partially.
      * @return the persisted entity.
      */
-    Optional<Timetable> partialUpdate(Timetable timetable);
+    Optional<TimetableDTO> partialUpdate(TimetableDTO timetableDTO);
 
     /**
      * Get all the timetables.
      *
+     * @param pageable the pagination information.
      * @return the list of entities.
      */
-    List<Timetable> findAll();
+    Page<TimetableDTO> findAll(Pageable pageable);
 
     /**
      * Get the "id" timetable.
@@ -45,7 +47,7 @@ public interface TimetableService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<Timetable> findOne(Long id);
+    Optional<TimetableDTO> findOne(Long id);
 
     /**
      * Delete the "id" timetable.

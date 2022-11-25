@@ -10,13 +10,19 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
-import uz.tashkec.education.domain.RegInstructuion;
 import uz.tashkec.education.repository.RegInstructuionRepository;
 import uz.tashkec.education.service.RegInstructuionService;
+import uz.tashkec.education.service.dto.RegInstructuionDTO;
 import uz.tashkec.education.web.rest.errors.BadRequestAlertException;
 
 /**
@@ -45,18 +51,18 @@ public class RegInstructuionResource {
     /**
      * {@code POST  /reg-instructuions} : Create a new regInstructuion.
      *
-     * @param regInstructuion the regInstructuion to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new regInstructuion, or with status {@code 400 (Bad Request)} if the regInstructuion has already an ID.
+     * @param regInstructuionDTO the regInstructuionDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new regInstructuionDTO, or with status {@code 400 (Bad Request)} if the regInstructuion has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/reg-instructuions")
-    public ResponseEntity<RegInstructuion> createRegInstructuion(@Valid @RequestBody RegInstructuion regInstructuion)
+    public ResponseEntity<RegInstructuionDTO> createRegInstructuion(@Valid @RequestBody RegInstructuionDTO regInstructuionDTO)
         throws URISyntaxException {
-        log.debug("REST request to save RegInstructuion : {}", regInstructuion);
-        if (regInstructuion.getId() != null) {
+        log.debug("REST request to save RegInstructuion : {}", regInstructuionDTO);
+        if (regInstructuionDTO.getId() != null) {
             throw new BadRequestAlertException("A new regInstructuion cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        RegInstructuion result = regInstructuionService.save(regInstructuion);
+        RegInstructuionDTO result = regInstructuionService.save(regInstructuionDTO);
         return ResponseEntity
             .created(new URI("/api/reg-instructuions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -66,23 +72,23 @@ public class RegInstructuionResource {
     /**
      * {@code PUT  /reg-instructuions/:id} : Updates an existing regInstructuion.
      *
-     * @param id the id of the regInstructuion to save.
-     * @param regInstructuion the regInstructuion to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated regInstructuion,
-     * or with status {@code 400 (Bad Request)} if the regInstructuion is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the regInstructuion couldn't be updated.
+     * @param id the id of the regInstructuionDTO to save.
+     * @param regInstructuionDTO the regInstructuionDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated regInstructuionDTO,
+     * or with status {@code 400 (Bad Request)} if the regInstructuionDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the regInstructuionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/reg-instructuions/{id}")
-    public ResponseEntity<RegInstructuion> updateRegInstructuion(
+    public ResponseEntity<RegInstructuionDTO> updateRegInstructuion(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody RegInstructuion regInstructuion
+        @Valid @RequestBody RegInstructuionDTO regInstructuionDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update RegInstructuion : {}, {}", id, regInstructuion);
-        if (regInstructuion.getId() == null) {
+        log.debug("REST request to update RegInstructuion : {}, {}", id, regInstructuionDTO);
+        if (regInstructuionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, regInstructuion.getId())) {
+        if (!Objects.equals(id, regInstructuionDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -90,34 +96,34 @@ public class RegInstructuionResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        RegInstructuion result = regInstructuionService.update(regInstructuion);
+        RegInstructuionDTO result = regInstructuionService.update(regInstructuionDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, regInstructuion.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, regInstructuionDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /reg-instructuions/:id} : Partial updates given fields of an existing regInstructuion, field will ignore if it is null
      *
-     * @param id the id of the regInstructuion to save.
-     * @param regInstructuion the regInstructuion to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated regInstructuion,
-     * or with status {@code 400 (Bad Request)} if the regInstructuion is not valid,
-     * or with status {@code 404 (Not Found)} if the regInstructuion is not found,
-     * or with status {@code 500 (Internal Server Error)} if the regInstructuion couldn't be updated.
+     * @param id the id of the regInstructuionDTO to save.
+     * @param regInstructuionDTO the regInstructuionDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated regInstructuionDTO,
+     * or with status {@code 400 (Bad Request)} if the regInstructuionDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the regInstructuionDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the regInstructuionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/reg-instructuions/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<RegInstructuion> partialUpdateRegInstructuion(
+    public ResponseEntity<RegInstructuionDTO> partialUpdateRegInstructuion(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody RegInstructuion regInstructuion
+        @NotNull @RequestBody RegInstructuionDTO regInstructuionDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update RegInstructuion partially : {}, {}", id, regInstructuion);
-        if (regInstructuion.getId() == null) {
+        log.debug("REST request to partial update RegInstructuion partially : {}, {}", id, regInstructuionDTO);
+        if (regInstructuionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, regInstructuion.getId())) {
+        if (!Objects.equals(id, regInstructuionDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -125,42 +131,47 @@ public class RegInstructuionResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<RegInstructuion> result = regInstructuionService.partialUpdate(regInstructuion);
+        Optional<RegInstructuionDTO> result = regInstructuionService.partialUpdate(regInstructuionDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, regInstructuion.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, regInstructuionDTO.getId().toString())
         );
     }
 
     /**
      * {@code GET  /reg-instructuions} : get all the regInstructuions.
      *
+     * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of regInstructuions in body.
      */
     @GetMapping("/reg-instructuions")
-    public List<RegInstructuion> getAllRegInstructuions() {
-        log.debug("REST request to get all RegInstructuions");
-        return regInstructuionService.findAll();
+    public ResponseEntity<List<RegInstructuionDTO>> getAllRegInstructuions(
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get a page of RegInstructuions");
+        Page<RegInstructuionDTO> page = regInstructuionService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
      * {@code GET  /reg-instructuions/:id} : get the "id" regInstructuion.
      *
-     * @param id the id of the regInstructuion to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the regInstructuion, or with status {@code 404 (Not Found)}.
+     * @param id the id of the regInstructuionDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the regInstructuionDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/reg-instructuions/{id}")
-    public ResponseEntity<RegInstructuion> getRegInstructuion(@PathVariable Long id) {
+    public ResponseEntity<RegInstructuionDTO> getRegInstructuion(@PathVariable Long id) {
         log.debug("REST request to get RegInstructuion : {}", id);
-        Optional<RegInstructuion> regInstructuion = regInstructuionService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(regInstructuion);
+        Optional<RegInstructuionDTO> regInstructuionDTO = regInstructuionService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(regInstructuionDTO);
     }
 
     /**
      * {@code DELETE  /reg-instructuions/:id} : delete the "id" regInstructuion.
      *
-     * @param id the id of the regInstructuion to delete.
+     * @param id the id of the regInstructuionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/reg-instructuions/{id}")

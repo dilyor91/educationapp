@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
-import { Translate } from 'react-jhipster';
+import { Translate, getSortState, JhiPagination, JhiItemCount } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
+import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IAddmissionRules } from 'app/shared/model/addmission-rules.model';
@@ -16,15 +18,67 @@ export const AddmissionRules = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [paginationState, setPaginationState] = useState(
+    overridePaginationStateWithQueryParams(getSortState(location, ITEMS_PER_PAGE, 'id'), location.search)
+  );
+
   const addmissionRulesList = useAppSelector(state => state.addmissionRules.entities);
   const loading = useAppSelector(state => state.addmissionRules.loading);
+  const totalItems = useAppSelector(state => state.addmissionRules.totalItems);
+
+  const getAllEntities = () => {
+    dispatch(
+      getEntities({
+        page: paginationState.activePage - 1,
+        size: paginationState.itemsPerPage,
+        sort: `${paginationState.sort},${paginationState.order}`,
+      })
+    );
+  };
+
+  const sortEntities = () => {
+    getAllEntities();
+    const endURL = `?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`;
+    if (location.search !== endURL) {
+      navigate(`${location.pathname}${endURL}`);
+    }
+  };
 
   useEffect(() => {
-    dispatch(getEntities({}));
-  }, []);
+    sortEntities();
+  }, [paginationState.activePage, paginationState.order, paginationState.sort]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const page = params.get('page');
+    const sort = params.get(SORT);
+    if (page && sort) {
+      const sortSplit = sort.split(',');
+      setPaginationState({
+        ...paginationState,
+        activePage: +page,
+        sort: sortSplit[0],
+        order: sortSplit[1],
+      });
+    }
+  }, [location.search]);
+
+  const sort = p => () => {
+    setPaginationState({
+      ...paginationState,
+      order: paginationState.order === ASC ? DESC : ASC,
+      sort: p,
+    });
+  };
+
+  const handlePagination = currentPage =>
+    setPaginationState({
+      ...paginationState,
+      activePage: currentPage,
+    });
 
   const handleSyncList = () => {
-    dispatch(getEntities({}));
+    sortEntities();
   };
 
   return (
@@ -48,29 +102,29 @@ export const AddmissionRules = () => {
           <Table responsive>
             <thead>
               <tr>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.id">ID</Translate>
+                <th className="hand" onClick={sort('id')}>
+                  <Translate contentKey="educationApp.addmissionRules.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.titleUz">Title Uz</Translate>
+                <th className="hand" onClick={sort('titleUz')}>
+                  <Translate contentKey="educationApp.addmissionRules.titleUz">Title Uz</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.titleRu">Title Ru</Translate>
+                <th className="hand" onClick={sort('titleRu')}>
+                  <Translate contentKey="educationApp.addmissionRules.titleRu">Title Ru</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.titleKr">Title Kr</Translate>
+                <th className="hand" onClick={sort('titleKr')}>
+                  <Translate contentKey="educationApp.addmissionRules.titleKr">Title Kr</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.contentUz">Content Uz</Translate>
+                <th className="hand" onClick={sort('contentUz')}>
+                  <Translate contentKey="educationApp.addmissionRules.contentUz">Content Uz</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.contentRu">Content Ru</Translate>
+                <th className="hand" onClick={sort('contentRu')}>
+                  <Translate contentKey="educationApp.addmissionRules.contentRu">Content Ru</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.contentKr">Content Kr</Translate>
+                <th className="hand" onClick={sort('contentKr')}>
+                  <Translate contentKey="educationApp.addmissionRules.contentKr">Content Kr</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th>
-                  <Translate contentKey="educationApp.addmissionRules.status">Status</Translate>
+                <th className="hand" onClick={sort('status')}>
+                  <Translate contentKey="educationApp.addmissionRules.status">Status</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
               </tr>
@@ -106,7 +160,7 @@ export const AddmissionRules = () => {
                       </Button>
                       <Button
                         tag={Link}
-                        to={`/addmission-rules/${addmissionRules.id}/edit`}
+                        to={`/addmission-rules/${addmissionRules.id}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
                         color="primary"
                         size="sm"
                         data-cy="entityEditButton"
@@ -118,7 +172,7 @@ export const AddmissionRules = () => {
                       </Button>
                       <Button
                         tag={Link}
-                        to={`/addmission-rules/${addmissionRules.id}/delete`}
+                        to={`/addmission-rules/${addmissionRules.id}/delete?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
                         color="danger"
                         size="sm"
                         data-cy="entityDeleteButton"
@@ -142,6 +196,24 @@ export const AddmissionRules = () => {
           )
         )}
       </div>
+      {totalItems ? (
+        <div className={addmissionRulesList && addmissionRulesList.length > 0 ? '' : 'd-none'}>
+          <div className="justify-content-center d-flex">
+            <JhiItemCount page={paginationState.activePage} total={totalItems} itemsPerPage={paginationState.itemsPerPage} i18nEnabled />
+          </div>
+          <div className="justify-content-center d-flex">
+            <JhiPagination
+              activePage={paginationState.activePage}
+              onSelect={handlePagination}
+              maxButtons={5}
+              itemsPerPage={paginationState.itemsPerPage}
+              totalItems={totalItems}
+            />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 };

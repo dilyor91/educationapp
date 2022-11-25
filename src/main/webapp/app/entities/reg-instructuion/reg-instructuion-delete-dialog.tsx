@@ -25,7 +25,7 @@ export const RegInstructuionDeleteDialog = () => {
   const updateSuccess = useAppSelector(state => state.regInstructuion.updateSuccess);
 
   const handleClose = () => {
-    navigate('/reg-instructuion');
+    navigate('/reg-instructuion' + location.search);
   };
 
   useEffect(() => {

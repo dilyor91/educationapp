@@ -10,13 +10,19 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
-import uz.tashkec.education.domain.Timetable;
 import uz.tashkec.education.repository.TimetableRepository;
 import uz.tashkec.education.service.TimetableService;
+import uz.tashkec.education.service.dto.TimetableDTO;
 import uz.tashkec.education.web.rest.errors.BadRequestAlertException;
 
 /**
@@ -45,17 +51,17 @@ public class TimetableResource {
     /**
      * {@code POST  /timetables} : Create a new timetable.
      *
-     * @param timetable the timetable to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new timetable, or with status {@code 400 (Bad Request)} if the timetable has already an ID.
+     * @param timetableDTO the timetableDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new timetableDTO, or with status {@code 400 (Bad Request)} if the timetable has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/timetables")
-    public ResponseEntity<Timetable> createTimetable(@Valid @RequestBody Timetable timetable) throws URISyntaxException {
-        log.debug("REST request to save Timetable : {}", timetable);
-        if (timetable.getId() != null) {
+    public ResponseEntity<TimetableDTO> createTimetable(@Valid @RequestBody TimetableDTO timetableDTO) throws URISyntaxException {
+        log.debug("REST request to save Timetable : {}", timetableDTO);
+        if (timetableDTO.getId() != null) {
             throw new BadRequestAlertException("A new timetable cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Timetable result = timetableService.save(timetable);
+        TimetableDTO result = timetableService.save(timetableDTO);
         return ResponseEntity
             .created(new URI("/api/timetables/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -65,23 +71,23 @@ public class TimetableResource {
     /**
      * {@code PUT  /timetables/:id} : Updates an existing timetable.
      *
-     * @param id the id of the timetable to save.
-     * @param timetable the timetable to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated timetable,
-     * or with status {@code 400 (Bad Request)} if the timetable is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the timetable couldn't be updated.
+     * @param id the id of the timetableDTO to save.
+     * @param timetableDTO the timetableDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated timetableDTO,
+     * or with status {@code 400 (Bad Request)} if the timetableDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the timetableDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/timetables/{id}")
-    public ResponseEntity<Timetable> updateTimetable(
+    public ResponseEntity<TimetableDTO> updateTimetable(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Timetable timetable
+        @Valid @RequestBody TimetableDTO timetableDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Timetable : {}, {}", id, timetable);
-        if (timetable.getId() == null) {
+        log.debug("REST request to update Timetable : {}, {}", id, timetableDTO);
+        if (timetableDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, timetable.getId())) {
+        if (!Objects.equals(id, timetableDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -89,34 +95,34 @@ public class TimetableResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Timetable result = timetableService.update(timetable);
+        TimetableDTO result = timetableService.update(timetableDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, timetable.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, timetableDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /timetables/:id} : Partial updates given fields of an existing timetable, field will ignore if it is null
      *
-     * @param id the id of the timetable to save.
-     * @param timetable the timetable to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated timetable,
-     * or with status {@code 400 (Bad Request)} if the timetable is not valid,
-     * or with status {@code 404 (Not Found)} if the timetable is not found,
-     * or with status {@code 500 (Internal Server Error)} if the timetable couldn't be updated.
+     * @param id the id of the timetableDTO to save.
+     * @param timetableDTO the timetableDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated timetableDTO,
+     * or with status {@code 400 (Bad Request)} if the timetableDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the timetableDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the timetableDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/timetables/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Timetable> partialUpdateTimetable(
+    public ResponseEntity<TimetableDTO> partialUpdateTimetable(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Timetable timetable
+        @NotNull @RequestBody TimetableDTO timetableDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Timetable partially : {}, {}", id, timetable);
-        if (timetable.getId() == null) {
+        log.debug("REST request to partial update Timetable partially : {}, {}", id, timetableDTO);
+        if (timetableDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, timetable.getId())) {
+        if (!Objects.equals(id, timetableDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -124,42 +130,45 @@ public class TimetableResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Timetable> result = timetableService.partialUpdate(timetable);
+        Optional<TimetableDTO> result = timetableService.partialUpdate(timetableDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, timetable.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, timetableDTO.getId().toString())
         );
     }
 
     /**
      * {@code GET  /timetables} : get all the timetables.
      *
+     * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of timetables in body.
      */
     @GetMapping("/timetables")
-    public List<Timetable> getAllTimetables() {
-        log.debug("REST request to get all Timetables");
-        return timetableService.findAll();
+    public ResponseEntity<List<TimetableDTO>> getAllTimetables(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+        log.debug("REST request to get a page of Timetables");
+        Page<TimetableDTO> page = timetableService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
      * {@code GET  /timetables/:id} : get the "id" timetable.
      *
-     * @param id the id of the timetable to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the timetable, or with status {@code 404 (Not Found)}.
+     * @param id the id of the timetableDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the timetableDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/timetables/{id}")
-    public ResponseEntity<Timetable> getTimetable(@PathVariable Long id) {
+    public ResponseEntity<TimetableDTO> getTimetable(@PathVariable Long id) {
         log.debug("REST request to get Timetable : {}", id);
-        Optional<Timetable> timetable = timetableService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(timetable);
+        Optional<TimetableDTO> timetableDTO = timetableService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(timetableDTO);
     }
 
     /**
      * {@code DELETE  /timetables/:id} : delete the "id" timetable.
      *
-     * @param id the id of the timetable to delete.
+     * @param id the id of the timetableDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/timetables/{id}")
