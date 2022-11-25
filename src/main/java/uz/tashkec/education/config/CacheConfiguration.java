@@ -48,21 +48,6 @@ public class CacheConfiguration {
             createCache(cm, uz.tashkec.education.domain.User.class.getName());
             createCache(cm, uz.tashkec.education.domain.Authority.class.getName());
             createCache(cm, uz.tashkec.education.domain.User.class.getName() + ".authorities");
-            createCache(cm, uz.tashkec.education.domain.RegInstructuion.class.getName());
-            createCache(cm, uz.tashkec.education.domain.AddmissionRules.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Timetable.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Region.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Country.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Location.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Department.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Department.class.getName() + ".employees");
-            createCache(cm, uz.tashkec.education.domain.Task.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Task.class.getName() + ".jobs");
-            createCache(cm, uz.tashkec.education.domain.Employee.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Employee.class.getName() + ".jobs");
-            createCache(cm, uz.tashkec.education.domain.Job.class.getName());
-            createCache(cm, uz.tashkec.education.domain.Job.class.getName() + ".tasks");
-            createCache(cm, uz.tashkec.education.domain.JobHistory.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }
