@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.tashkec.education.IntegrationTest;
 import uz.tashkec.education.domain.RegInstructuion;
 import uz.tashkec.education.repository.RegInstructuionRepository;
+import uz.tashkec.education.service.dto.RegInstructuionDTO;
+import uz.tashkec.education.service.mapper.RegInstructuionMapper;
 
 /**
  * Integration tests for the {@link RegInstructuionResource} REST controller.
@@ -58,6 +60,9 @@ class RegInstructuionResourceIT {
 
     @Autowired
     private RegInstructuionRepository regInstructuionRepository;
+
+    @Autowired
+    private RegInstructuionMapper regInstructuionMapper;
 
     @Autowired
     private EntityManager em;
@@ -113,9 +118,10 @@ class RegInstructuionResourceIT {
     void createRegInstructuion() throws Exception {
         int databaseSizeBeforeCreate = regInstructuionRepository.findAll().size();
         // Create the RegInstructuion
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isCreated());
 
@@ -137,13 +143,14 @@ class RegInstructuionResourceIT {
     void createRegInstructuionWithExistingId() throws Exception {
         // Create the RegInstructuion with an existing ID
         regInstructuion.setId(1L);
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         int databaseSizeBeforeCreate = regInstructuionRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -160,10 +167,11 @@ class RegInstructuionResourceIT {
         regInstructuion.setTitleUz(null);
 
         // Create the RegInstructuion, which fails.
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -179,10 +187,11 @@ class RegInstructuionResourceIT {
         regInstructuion.setTitleRu(null);
 
         // Create the RegInstructuion, which fails.
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -198,10 +207,11 @@ class RegInstructuionResourceIT {
         regInstructuion.setTitleKr(null);
 
         // Create the RegInstructuion, which fails.
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -217,10 +227,11 @@ class RegInstructuionResourceIT {
         regInstructuion.setContentUz(null);
 
         // Create the RegInstructuion, which fails.
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -236,10 +247,11 @@ class RegInstructuionResourceIT {
         regInstructuion.setContentRu(null);
 
         // Create the RegInstructuion, which fails.
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -255,10 +267,11 @@ class RegInstructuionResourceIT {
         regInstructuion.setContentKr(null);
 
         // Create the RegInstructuion, which fails.
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -274,10 +287,11 @@ class RegInstructuionResourceIT {
         regInstructuion.setStatus(null);
 
         // Create the RegInstructuion, which fails.
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -354,12 +368,13 @@ class RegInstructuionResourceIT {
             .contentRu(UPDATED_CONTENT_RU)
             .contentKr(UPDATED_CONTENT_KR)
             .status(UPDATED_STATUS);
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(updatedRegInstructuion);
 
         restRegInstructuionMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedRegInstructuion.getId())
+                put(ENTITY_API_URL_ID, regInstructuionDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedRegInstructuion))
+                    .content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isOk());
 
@@ -382,12 +397,15 @@ class RegInstructuionResourceIT {
         int databaseSizeBeforeUpdate = regInstructuionRepository.findAll().size();
         regInstructuion.setId(count.incrementAndGet());
 
+        // Create the RegInstructuion
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restRegInstructuionMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, regInstructuion.getId())
+                put(ENTITY_API_URL_ID, regInstructuionDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                    .content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -402,12 +420,15 @@ class RegInstructuionResourceIT {
         int databaseSizeBeforeUpdate = regInstructuionRepository.findAll().size();
         regInstructuion.setId(count.incrementAndGet());
 
+        // Create the RegInstructuion
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRegInstructuionMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                    .content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -422,10 +443,13 @@ class RegInstructuionResourceIT {
         int databaseSizeBeforeUpdate = regInstructuionRepository.findAll().size();
         regInstructuion.setId(count.incrementAndGet());
 
+        // Create the RegInstructuion
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRegInstructuionMockMvc
             .perform(
-                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
@@ -517,12 +541,15 @@ class RegInstructuionResourceIT {
         int databaseSizeBeforeUpdate = regInstructuionRepository.findAll().size();
         regInstructuion.setId(count.incrementAndGet());
 
+        // Create the RegInstructuion
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restRegInstructuionMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, regInstructuion.getId())
+                patch(ENTITY_API_URL_ID, regInstructuionDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                    .content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -537,12 +564,15 @@ class RegInstructuionResourceIT {
         int databaseSizeBeforeUpdate = regInstructuionRepository.findAll().size();
         regInstructuion.setId(count.incrementAndGet());
 
+        // Create the RegInstructuion
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRegInstructuionMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                    .content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -557,12 +587,15 @@ class RegInstructuionResourceIT {
         int databaseSizeBeforeUpdate = regInstructuionRepository.findAll().size();
         regInstructuion.setId(count.incrementAndGet());
 
+        // Create the RegInstructuion
+        RegInstructuionDTO regInstructuionDTO = regInstructuionMapper.toDto(regInstructuion);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restRegInstructuionMockMvc
             .perform(
                 patch(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(regInstructuion))
+                    .content(TestUtil.convertObjectToJsonBytes(regInstructuionDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

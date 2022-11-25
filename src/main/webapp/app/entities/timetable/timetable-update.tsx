@@ -25,7 +25,7 @@ export const TimetableUpdate = () => {
   const updateSuccess = useAppSelector(state => state.timetable.updateSuccess);
 
   const handleClose = () => {
-    navigate('/timetable');
+    navigate('/timetable' + location.search);
   };
 
   useEffect(() => {

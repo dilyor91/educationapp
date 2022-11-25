@@ -1,14 +1,17 @@
 package uz.tashkec.education.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.tashkec.education.domain.Timetable;
 import uz.tashkec.education.repository.TimetableRepository;
 import uz.tashkec.education.service.TimetableService;
+import uz.tashkec.education.service.dto.TimetableDTO;
+import uz.tashkec.education.service.mapper.TimetableMapper;
 
 /**
  * Service Implementation for managing {@link Timetable}.
@@ -21,68 +24,56 @@ public class TimetableServiceImpl implements TimetableService {
 
     private final TimetableRepository timetableRepository;
 
-    public TimetableServiceImpl(TimetableRepository timetableRepository) {
+    private final TimetableMapper timetableMapper;
+
+    public TimetableServiceImpl(TimetableRepository timetableRepository, TimetableMapper timetableMapper) {
         this.timetableRepository = timetableRepository;
+        this.timetableMapper = timetableMapper;
     }
 
     @Override
-    public Timetable save(Timetable timetable) {
-        log.debug("Request to save Timetable : {}", timetable);
-        return timetableRepository.save(timetable);
+    public TimetableDTO save(TimetableDTO timetableDTO) {
+        log.debug("Request to save Timetable : {}", timetableDTO);
+        Timetable timetable = timetableMapper.toEntity(timetableDTO);
+        timetable = timetableRepository.save(timetable);
+        return timetableMapper.toDto(timetable);
     }
 
     @Override
-    public Timetable update(Timetable timetable) {
-        log.debug("Request to update Timetable : {}", timetable);
-        return timetableRepository.save(timetable);
+    public TimetableDTO update(TimetableDTO timetableDTO) {
+        log.debug("Request to update Timetable : {}", timetableDTO);
+        Timetable timetable = timetableMapper.toEntity(timetableDTO);
+        timetable = timetableRepository.save(timetable);
+        return timetableMapper.toDto(timetable);
     }
 
     @Override
-    public Optional<Timetable> partialUpdate(Timetable timetable) {
-        log.debug("Request to partially update Timetable : {}", timetable);
+    public Optional<TimetableDTO> partialUpdate(TimetableDTO timetableDTO) {
+        log.debug("Request to partially update Timetable : {}", timetableDTO);
 
         return timetableRepository
-            .findById(timetable.getId())
+            .findById(timetableDTO.getId())
             .map(existingTimetable -> {
-                if (timetable.getTitleUz() != null) {
-                    existingTimetable.setTitleUz(timetable.getTitleUz());
-                }
-                if (timetable.getTitleRu() != null) {
-                    existingTimetable.setTitleRu(timetable.getTitleRu());
-                }
-                if (timetable.getTitleKr() != null) {
-                    existingTimetable.setTitleKr(timetable.getTitleKr());
-                }
-                if (timetable.getContentUz() != null) {
-                    existingTimetable.setContentUz(timetable.getContentUz());
-                }
-                if (timetable.getContentRu() != null) {
-                    existingTimetable.setContentRu(timetable.getContentRu());
-                }
-                if (timetable.getContentKr() != null) {
-                    existingTimetable.setContentKr(timetable.getContentKr());
-                }
-                if (timetable.getStatus() != null) {
-                    existingTimetable.setStatus(timetable.getStatus());
-                }
+                timetableMapper.partialUpdate(existingTimetable, timetableDTO);
 
                 return existingTimetable;
             })
-            .map(timetableRepository::save);
+            .map(timetableRepository::save)
+            .map(timetableMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Timetable> findAll() {
+    public Page<TimetableDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Timetables");
-        return timetableRepository.findAll();
+        return timetableRepository.findAll(pageable).map(timetableMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Timetable> findOne(Long id) {
+    public Optional<TimetableDTO> findOne(Long id) {
         log.debug("Request to get Timetable : {}", id);
-        return timetableRepository.findById(id);
+        return timetableRepository.findById(id).map(timetableMapper::toDto);
     }
 
     @Override

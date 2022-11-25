@@ -1,7 +1,7 @@
 {
   "applications": "*",
   "changelogDate": "20221125113228",
-  "dto": "no",
+  "dto": "mapstruct",
   "embedded": false,
   "entityTableName": "addmission_rules",
   "fields": [
@@ -44,7 +44,7 @@
   "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "name": "AddmissionRules",
-  "pagination": "no",
+  "pagination": "pagination",
   "readOnly": false,
   "relationships": [],
   "service": "serviceImpl"

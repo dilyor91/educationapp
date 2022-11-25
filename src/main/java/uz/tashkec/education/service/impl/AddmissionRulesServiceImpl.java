@@ -1,14 +1,17 @@
 package uz.tashkec.education.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.tashkec.education.domain.AddmissionRules;
 import uz.tashkec.education.repository.AddmissionRulesRepository;
 import uz.tashkec.education.service.AddmissionRulesService;
+import uz.tashkec.education.service.dto.AddmissionRulesDTO;
+import uz.tashkec.education.service.mapper.AddmissionRulesMapper;
 
 /**
  * Service Implementation for managing {@link AddmissionRules}.
@@ -21,68 +24,56 @@ public class AddmissionRulesServiceImpl implements AddmissionRulesService {
 
     private final AddmissionRulesRepository addmissionRulesRepository;
 
-    public AddmissionRulesServiceImpl(AddmissionRulesRepository addmissionRulesRepository) {
+    private final AddmissionRulesMapper addmissionRulesMapper;
+
+    public AddmissionRulesServiceImpl(AddmissionRulesRepository addmissionRulesRepository, AddmissionRulesMapper addmissionRulesMapper) {
         this.addmissionRulesRepository = addmissionRulesRepository;
+        this.addmissionRulesMapper = addmissionRulesMapper;
     }
 
     @Override
-    public AddmissionRules save(AddmissionRules addmissionRules) {
-        log.debug("Request to save AddmissionRules : {}", addmissionRules);
-        return addmissionRulesRepository.save(addmissionRules);
+    public AddmissionRulesDTO save(AddmissionRulesDTO addmissionRulesDTO) {
+        log.debug("Request to save AddmissionRules : {}", addmissionRulesDTO);
+        AddmissionRules addmissionRules = addmissionRulesMapper.toEntity(addmissionRulesDTO);
+        addmissionRules = addmissionRulesRepository.save(addmissionRules);
+        return addmissionRulesMapper.toDto(addmissionRules);
     }
 
     @Override
-    public AddmissionRules update(AddmissionRules addmissionRules) {
-        log.debug("Request to update AddmissionRules : {}", addmissionRules);
-        return addmissionRulesRepository.save(addmissionRules);
+    public AddmissionRulesDTO update(AddmissionRulesDTO addmissionRulesDTO) {
+        log.debug("Request to update AddmissionRules : {}", addmissionRulesDTO);
+        AddmissionRules addmissionRules = addmissionRulesMapper.toEntity(addmissionRulesDTO);
+        addmissionRules = addmissionRulesRepository.save(addmissionRules);
+        return addmissionRulesMapper.toDto(addmissionRules);
     }
 
     @Override
-    public Optional<AddmissionRules> partialUpdate(AddmissionRules addmissionRules) {
-        log.debug("Request to partially update AddmissionRules : {}", addmissionRules);
+    public Optional<AddmissionRulesDTO> partialUpdate(AddmissionRulesDTO addmissionRulesDTO) {
+        log.debug("Request to partially update AddmissionRules : {}", addmissionRulesDTO);
 
         return addmissionRulesRepository
-            .findById(addmissionRules.getId())
+            .findById(addmissionRulesDTO.getId())
             .map(existingAddmissionRules -> {
-                if (addmissionRules.getTitleUz() != null) {
-                    existingAddmissionRules.setTitleUz(addmissionRules.getTitleUz());
-                }
-                if (addmissionRules.getTitleRu() != null) {
-                    existingAddmissionRules.setTitleRu(addmissionRules.getTitleRu());
-                }
-                if (addmissionRules.getTitleKr() != null) {
-                    existingAddmissionRules.setTitleKr(addmissionRules.getTitleKr());
-                }
-                if (addmissionRules.getContentUz() != null) {
-                    existingAddmissionRules.setContentUz(addmissionRules.getContentUz());
-                }
-                if (addmissionRules.getContentRu() != null) {
-                    existingAddmissionRules.setContentRu(addmissionRules.getContentRu());
-                }
-                if (addmissionRules.getContentKr() != null) {
-                    existingAddmissionRules.setContentKr(addmissionRules.getContentKr());
-                }
-                if (addmissionRules.getStatus() != null) {
-                    existingAddmissionRules.setStatus(addmissionRules.getStatus());
-                }
+                addmissionRulesMapper.partialUpdate(existingAddmissionRules, addmissionRulesDTO);
 
                 return existingAddmissionRules;
             })
-            .map(addmissionRulesRepository::save);
+            .map(addmissionRulesRepository::save)
+            .map(addmissionRulesMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<AddmissionRules> findAll() {
+    public Page<AddmissionRulesDTO> findAll(Pageable pageable) {
         log.debug("Request to get all AddmissionRules");
-        return addmissionRulesRepository.findAll();
+        return addmissionRulesRepository.findAll(pageable).map(addmissionRulesMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<AddmissionRules> findOne(Long id) {
+    public Optional<AddmissionRulesDTO> findOne(Long id) {
         log.debug("Request to get AddmissionRules : {}", id);
-        return addmissionRulesRepository.findById(id);
+        return addmissionRulesRepository.findById(id).map(addmissionRulesMapper::toDto);
     }
 
     @Override

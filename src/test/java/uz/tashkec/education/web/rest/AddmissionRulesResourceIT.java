@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.tashkec.education.IntegrationTest;
 import uz.tashkec.education.domain.AddmissionRules;
 import uz.tashkec.education.repository.AddmissionRulesRepository;
+import uz.tashkec.education.service.dto.AddmissionRulesDTO;
+import uz.tashkec.education.service.mapper.AddmissionRulesMapper;
 
 /**
  * Integration tests for the {@link AddmissionRulesResource} REST controller.
@@ -58,6 +60,9 @@ class AddmissionRulesResourceIT {
 
     @Autowired
     private AddmissionRulesRepository addmissionRulesRepository;
+
+    @Autowired
+    private AddmissionRulesMapper addmissionRulesMapper;
 
     @Autowired
     private EntityManager em;
@@ -113,9 +118,10 @@ class AddmissionRulesResourceIT {
     void createAddmissionRules() throws Exception {
         int databaseSizeBeforeCreate = addmissionRulesRepository.findAll().size();
         // Create the AddmissionRules
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isCreated());
 
@@ -137,13 +143,14 @@ class AddmissionRulesResourceIT {
     void createAddmissionRulesWithExistingId() throws Exception {
         // Create the AddmissionRules with an existing ID
         addmissionRules.setId(1L);
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         int databaseSizeBeforeCreate = addmissionRulesRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -160,10 +167,11 @@ class AddmissionRulesResourceIT {
         addmissionRules.setTitleUz(null);
 
         // Create the AddmissionRules, which fails.
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -179,10 +187,11 @@ class AddmissionRulesResourceIT {
         addmissionRules.setTitleRu(null);
 
         // Create the AddmissionRules, which fails.
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -198,10 +207,11 @@ class AddmissionRulesResourceIT {
         addmissionRules.setTitleKr(null);
 
         // Create the AddmissionRules, which fails.
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -217,10 +227,11 @@ class AddmissionRulesResourceIT {
         addmissionRules.setContentUz(null);
 
         // Create the AddmissionRules, which fails.
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -236,10 +247,11 @@ class AddmissionRulesResourceIT {
         addmissionRules.setContentRu(null);
 
         // Create the AddmissionRules, which fails.
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -255,10 +267,11 @@ class AddmissionRulesResourceIT {
         addmissionRules.setContentKr(null);
 
         // Create the AddmissionRules, which fails.
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -274,10 +287,11 @@ class AddmissionRulesResourceIT {
         addmissionRules.setStatus(null);
 
         // Create the AddmissionRules, which fails.
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -354,12 +368,13 @@ class AddmissionRulesResourceIT {
             .contentRu(UPDATED_CONTENT_RU)
             .contentKr(UPDATED_CONTENT_KR)
             .status(UPDATED_STATUS);
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(updatedAddmissionRules);
 
         restAddmissionRulesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedAddmissionRules.getId())
+                put(ENTITY_API_URL_ID, addmissionRulesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedAddmissionRules))
+                    .content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isOk());
 
@@ -382,12 +397,15 @@ class AddmissionRulesResourceIT {
         int databaseSizeBeforeUpdate = addmissionRulesRepository.findAll().size();
         addmissionRules.setId(count.incrementAndGet());
 
+        // Create the AddmissionRules
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAddmissionRulesMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, addmissionRules.getId())
+                put(ENTITY_API_URL_ID, addmissionRulesDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                    .content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -402,12 +420,15 @@ class AddmissionRulesResourceIT {
         int databaseSizeBeforeUpdate = addmissionRulesRepository.findAll().size();
         addmissionRules.setId(count.incrementAndGet());
 
+        // Create the AddmissionRules
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAddmissionRulesMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                    .content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -422,10 +443,13 @@ class AddmissionRulesResourceIT {
         int databaseSizeBeforeUpdate = addmissionRulesRepository.findAll().size();
         addmissionRules.setId(count.incrementAndGet());
 
+        // Create the AddmissionRules
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAddmissionRulesMockMvc
             .perform(
-                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
@@ -517,12 +541,15 @@ class AddmissionRulesResourceIT {
         int databaseSizeBeforeUpdate = addmissionRulesRepository.findAll().size();
         addmissionRules.setId(count.incrementAndGet());
 
+        // Create the AddmissionRules
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAddmissionRulesMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, addmissionRules.getId())
+                patch(ENTITY_API_URL_ID, addmissionRulesDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                    .content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -537,12 +564,15 @@ class AddmissionRulesResourceIT {
         int databaseSizeBeforeUpdate = addmissionRulesRepository.findAll().size();
         addmissionRules.setId(count.incrementAndGet());
 
+        // Create the AddmissionRules
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAddmissionRulesMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                    .content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -557,12 +587,15 @@ class AddmissionRulesResourceIT {
         int databaseSizeBeforeUpdate = addmissionRulesRepository.findAll().size();
         addmissionRules.setId(count.incrementAndGet());
 
+        // Create the AddmissionRules
+        AddmissionRulesDTO addmissionRulesDTO = addmissionRulesMapper.toDto(addmissionRules);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restAddmissionRulesMockMvc
             .perform(
                 patch(ENTITY_API_URL)
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(addmissionRules))
+                    .content(TestUtil.convertObjectToJsonBytes(addmissionRulesDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

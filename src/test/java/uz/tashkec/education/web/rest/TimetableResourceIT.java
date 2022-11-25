@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.tashkec.education.IntegrationTest;
 import uz.tashkec.education.domain.Timetable;
 import uz.tashkec.education.repository.TimetableRepository;
+import uz.tashkec.education.service.dto.TimetableDTO;
+import uz.tashkec.education.service.mapper.TimetableMapper;
 
 /**
  * Integration tests for the {@link TimetableResource} REST controller.
@@ -58,6 +60,9 @@ class TimetableResourceIT {
 
     @Autowired
     private TimetableRepository timetableRepository;
+
+    @Autowired
+    private TimetableMapper timetableMapper;
 
     @Autowired
     private EntityManager em;
@@ -113,8 +118,9 @@ class TimetableResourceIT {
     void createTimetable() throws Exception {
         int databaseSizeBeforeCreate = timetableRepository.findAll().size();
         // Create the Timetable
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Timetable in the database
@@ -135,12 +141,13 @@ class TimetableResourceIT {
     void createTimetableWithExistingId() throws Exception {
         // Create the Timetable with an existing ID
         timetable.setId(1L);
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         int databaseSizeBeforeCreate = timetableRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Timetable in the database
@@ -156,9 +163,10 @@ class TimetableResourceIT {
         timetable.setTitleUz(null);
 
         // Create the Timetable, which fails.
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         List<Timetable> timetableList = timetableRepository.findAll();
@@ -173,9 +181,10 @@ class TimetableResourceIT {
         timetable.setTitleRu(null);
 
         // Create the Timetable, which fails.
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         List<Timetable> timetableList = timetableRepository.findAll();
@@ -190,9 +199,10 @@ class TimetableResourceIT {
         timetable.setTitleKr(null);
 
         // Create the Timetable, which fails.
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         List<Timetable> timetableList = timetableRepository.findAll();
@@ -207,9 +217,10 @@ class TimetableResourceIT {
         timetable.setContentUz(null);
 
         // Create the Timetable, which fails.
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         List<Timetable> timetableList = timetableRepository.findAll();
@@ -224,9 +235,10 @@ class TimetableResourceIT {
         timetable.setContentRu(null);
 
         // Create the Timetable, which fails.
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         List<Timetable> timetableList = timetableRepository.findAll();
@@ -241,9 +253,10 @@ class TimetableResourceIT {
         timetable.setContentKr(null);
 
         // Create the Timetable, which fails.
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         List<Timetable> timetableList = timetableRepository.findAll();
@@ -258,9 +271,10 @@ class TimetableResourceIT {
         timetable.setStatus(null);
 
         // Create the Timetable, which fails.
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
 
         restTimetableMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isBadRequest());
 
         List<Timetable> timetableList = timetableRepository.findAll();
@@ -336,12 +350,13 @@ class TimetableResourceIT {
             .contentRu(UPDATED_CONTENT_RU)
             .contentKr(UPDATED_CONTENT_KR)
             .status(UPDATED_STATUS);
+        TimetableDTO timetableDTO = timetableMapper.toDto(updatedTimetable);
 
         restTimetableMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedTimetable.getId())
+                put(ENTITY_API_URL_ID, timetableDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedTimetable))
+                    .content(TestUtil.convertObjectToJsonBytes(timetableDTO))
             )
             .andExpect(status().isOk());
 
@@ -364,12 +379,15 @@ class TimetableResourceIT {
         int databaseSizeBeforeUpdate = timetableRepository.findAll().size();
         timetable.setId(count.incrementAndGet());
 
+        // Create the Timetable
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTimetableMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, timetable.getId())
+                put(ENTITY_API_URL_ID, timetableDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(timetable))
+                    .content(TestUtil.convertObjectToJsonBytes(timetableDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -384,12 +402,15 @@ class TimetableResourceIT {
         int databaseSizeBeforeUpdate = timetableRepository.findAll().size();
         timetable.setId(count.incrementAndGet());
 
+        // Create the Timetable
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTimetableMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(timetable))
+                    .content(TestUtil.convertObjectToJsonBytes(timetableDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -404,9 +425,12 @@ class TimetableResourceIT {
         int databaseSizeBeforeUpdate = timetableRepository.findAll().size();
         timetable.setId(count.incrementAndGet());
 
+        // Create the Timetable
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTimetableMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetable)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(timetableDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Timetable in the database
@@ -497,12 +521,15 @@ class TimetableResourceIT {
         int databaseSizeBeforeUpdate = timetableRepository.findAll().size();
         timetable.setId(count.incrementAndGet());
 
+        // Create the Timetable
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTimetableMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, timetable.getId())
+                patch(ENTITY_API_URL_ID, timetableDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(timetable))
+                    .content(TestUtil.convertObjectToJsonBytes(timetableDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -517,12 +544,15 @@ class TimetableResourceIT {
         int databaseSizeBeforeUpdate = timetableRepository.findAll().size();
         timetable.setId(count.incrementAndGet());
 
+        // Create the Timetable
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTimetableMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, count.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(timetable))
+                    .content(TestUtil.convertObjectToJsonBytes(timetableDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -537,10 +567,13 @@ class TimetableResourceIT {
         int databaseSizeBeforeUpdate = timetableRepository.findAll().size();
         timetable.setId(count.incrementAndGet());
 
+        // Create the Timetable
+        TimetableDTO timetableDTO = timetableMapper.toDto(timetable);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTimetableMockMvc
             .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(timetable))
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(timetableDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 
